@@ -31,12 +31,6 @@ Tests to see Perl can compile the script.
 
 `$script` should be the path to the script in unix-format non-absolute form.
 
-# CAVEATS
-
-Currently this module uses [AnyEvent::Open3::Simple](https://metacpan.org/pod/AnyEvent::Open3::Simple) (though that may change in the future)
-and on recent versions of Strawberry Perl (the most popular Windows port of Perl), the only
-event loop supported is [Event](https://metacpan.org/pod/Event).
-
 # AUTHOR
 
 Graham Ollis &lt;plicease@cpan.org>
