@@ -3,6 +3,7 @@ package Test::Script::AnyEvent;
 use strict;
 use warnings;
 use 5.010;
+use if $^O eq 'MSWin32', 'Event';
 use Carp ();
 use AE;
 use AnyEvent::Open3::Simple;

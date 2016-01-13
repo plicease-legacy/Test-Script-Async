@@ -15,8 +15,9 @@ $modules{$_} = $_ for qw(
   AnyEvent::Open3::Simple
   Carp
   EV
+  Event
+  ExtUtils::MakeMaker
   File::Spec
-  Module::Build
   Probe::Perl
   Test::More
   Test::Stream
