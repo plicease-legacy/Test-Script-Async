@@ -119,3 +119,11 @@ sub script_compiles
 }
 
 1;
+
+=head1 CAVEATS
+
+Currently this module uses L<AnyEvent::Open3::Simple> (though that may change in the future)
+and on recent versions of Strawberry Perl (the most popular Windows port of Perl), the only
+event loop supported is L<Event>.
+
+=cut
