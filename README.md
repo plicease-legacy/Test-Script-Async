@@ -1,4 +1,4 @@
-# Test::Script::AnyEvent
+# Test::Script::AnyEvent [![Build Status](https://secure.travis-ci.org/plicease/Test-Script-AnyEvent.png)](http://travis-ci.org/plicease/Test-Script-AnyEvent)
 
 Non-blocking friendly tests for scripts
 
