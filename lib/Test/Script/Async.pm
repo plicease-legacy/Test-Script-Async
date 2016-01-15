@@ -246,11 +246,12 @@ Test passes if the script run exited with the given value.
 =cut
 
 our $reverse = 0;
+our $level   = 0;
 
 sub exit_is
 {
   my($self, $value, $test_message) = @_;
-  my $ctx = context();
+  my $ctx = context( level => $level );
 
   $test_message ||= $reverse ? "script exited with a value other than $value" : "script exited with value $value";
   my $ok = defined $self->exit && !$self->{signal} && ($reverse ? $self->exit != $value : $self->exit == $value);
@@ -285,6 +286,7 @@ Same as L</exit_is> except the test fails if the exit value matches.
 sub exit_isnt
 {
   local $reverse = 1;
+  local $level   = 1;
   shift->exit_is(@_);
 }
 
@@ -302,7 +304,7 @@ Note that this is inherently unportable!  Espeically on Windows!
 sub signal_is
 {
   my($self, $value, $test_message) = @_;
-  my $ctx = context();
+  my $ctx = context(level => $level);
 
   $test_message ||= $reverse ? "script not killed by signal $value" : "script killed by signal $value";
   my $ok = $self->signal && ($reverse ? $self->signal != $value : $self->signal == $value);
@@ -337,7 +339,81 @@ Same as L</signal_is> except the test fails if the exit value matches.
 sub signal_isnt
 {
   local $reverse = 1;
+  local $level   = 1;
   shift->signal_is(@_);
+}
+
+=head2 out_like
+
+ $run->out_like($regex);
+ $run->out_like($regex, $test_name);
+
+Test passes if one of the output lines matches the given regex.
+
+=cut
+
+our $stream = 'out';
+our $stream_name = 'standard output';
+
+sub out_like
+{
+  my($self, $regex, $test_name) = @_;
+  
+  my $ctx = context(level => $level);
+  $test_name ||= $reverse ? "$stream_name does not match $regex" : "$stream_name matches $regex";
+  
+  my $ok;
+  my @diag;
+  
+  if($reverse)
+  {
+    $ok = 1;
+    my $num = 1;
+    foreach my $line (@{ $self->{$stream} })
+    {
+      if($line =~ $regex)
+      {
+        $ok = 0;
+        push @diag, "line $num of $stream_name matches: $line";
+      }
+      $num++;
+    }
+  }
+  else
+  {
+    $ok = 0;
+    foreach my $line (@{ $self->{$stream} })
+    {
+      if($line =~ $regex)
+      {
+        $ok = 1;
+        last;
+      }
+    }
+  }
+  
+  $ctx->ok($ok, $test_name);
+  $ctx->diag($_) for @diag;
+  
+  $ctx->release;
+  
+  $self;
+}
+
+=head2 out_unlike
+
+ $run->out_like($regex);
+ $run->out_like($regex, $test_name);
+
+Test passes if none of the output lines matches the given regex.
+
+=cut
+
+sub out_unlike
+{
+  local $reverse = 1;
+  local $level   = 1;
+  shift->out_like(@_);
 }
 
 1;
