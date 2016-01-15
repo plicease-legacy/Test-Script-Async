@@ -1,4 +1,4 @@
-package Test::Script::AnyEvent;
+package Test::Script::Async;
 
 use strict;
 use warnings;
@@ -19,7 +19,7 @@ no Test::Stream::Exporter;
 =head1 SYNOPSIS
 
  use Test::Stream -V1;
- use Test::Script::AnyEvent;
+ use Test::Script::Async;
  
  plan 1;
  

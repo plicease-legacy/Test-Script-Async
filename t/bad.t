@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Script::AnyEvent;
+use Test::Script::Async;
 use Test::Stream -V1;
 
 skip_all 'because it will always fail';

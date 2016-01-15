@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::Stream qw( -V1 -Tester );
-use Test::Script::AnyEvent;
+use Test::Script::Async;
 
 plan 3;
 
