@@ -17,6 +17,11 @@ This is a non-blocking friendly version of [Test::Script](https://metacpan.org/p
 that you want to test against a [AnyEvent](https://metacpan.org/pod/AnyEvent) based services that are running in the main test
 process.
 
+The interface is a little different for running scripts, in that instead of specifying a number
+of attributes that should be true as an argument, the ["script\_runs"](#script_runs) function returns an
+instance of [Test::Script::Async](https://metacpan.org/pod/Test::Script::Async) that can then be interrogated for things like exit value
+and output.
+
 It uses the brand spanking new [Test::Stream](https://metacpan.org/pod/Test::Stream), which means that it is not (as of this writing)
 compatible with [Test::More](https://metacpan.org/pod/Test::More) and friends, though hopefully that will be rectified one day.
 

@@ -31,6 +31,11 @@ This is a non-blocking friendly version of L<Test::Script>.  It is useful when y
 that you want to test against a L<AnyEvent> based services that are running in the main test
 process.
 
+The interface is a little different for running scripts, in that instead of specifying a number
+of attributes that should be true as an argument, the L</script_runs> function returns an
+instance of L<Test::Script::Async> that can then be interrogated for things like exit value
+and output.
+
 It uses the brand spanking new L<Test::Stream>, which means that it is not (as of this writing)
 compatible with L<Test::More> and friends, though hopefully that will be rectified one day.
 
