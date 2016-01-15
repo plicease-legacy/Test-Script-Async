@@ -234,5 +234,39 @@ sub err { shift->{err} }
 sub exit { shift->{exit} }
 sub signal { shift->{signal} }
 
+=head1 METHODS
+
+=head2 exit_is
+
+ $run->exit_is($value);
+ $run->exit_is($value, $test_name);
+
+Test passes if the script run exited with the given value.
+
+=cut
+
+sub exit_is
+{
+  my($self, $value, $test_message) = @_;
+  my $ctx = context();
+
+  $test_message ||= "script exited with value $value";
+  my $ok = defined $self->{exit} && $self->{exit} == $value;
+
+  $ctx->ok($ok, $test_message);
+  if(!defined $self->{exit})
+  {
+    $ctx->diag("script did not run so did not exit");
+  }
+  elsif(!$ok)
+  {
+    my $value = $self->exit;
+    $ctx->diag("script exited with value $value");
+  }
+
+  $ctx->release;
+  $self;
+}
+
 1;
 
