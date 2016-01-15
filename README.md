@@ -1,11 +1,11 @@
-# Test::Script::AnyEvent [![Build Status](https://secure.travis-ci.org/plicease/Test-Script-AnyEvent.png)](http://travis-ci.org/plicease/Test-Script-AnyEvent) [![Build status](https://ci.appveyor.com/api/projects/status/fcxqxw3utawfhdtr/branch/master?svg=true)](https://ci.appveyor.com/project/plicease/Test-Script-AnyEvent/branch/master)
+# Test::Script::Async [![Build Status](https://secure.travis-ci.org/plicease/Test-Script-Async.png)](http://travis-ci.org/plicease/Test-Script-Async) [![Build status](https://ci.appveyor.com/api/projects/status/fcxqxw3utawfhdtr/branch/master?svg=true)](https://ci.appveyor.com/project/plicease/Test-Script-Async/branch/master)
 
 Non-blocking friendly tests for scripts
 
 # SYNOPSIS
 
     use Test::Stream -V1;
-    use Test::Script::AnyEvent;
+    use Test::Script::Async;
     
     plan 1;
     
