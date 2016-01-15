@@ -26,7 +26,7 @@ is(
     };
     end;
   },
-  "compiles good without test name",
+  "compiles good with test name",
 );
 
 

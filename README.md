@@ -31,6 +31,50 @@ Tests to see Perl can compile the script.
 
 `$script` should be the path to the script in unix-format non-absolute form.
 
+## script\_runs
+
+    my $run = script_runs $script;
+    my $run = script_runs $script, $test_name;
+    my $run = script_runs [ $script, @arguments ];
+    my $run = script_runs [ $script, @arguments ], $test_name;
+
+Attempt to run the given script.  The only test made on this call
+is simply that the script ran.  The reasons this test might fail
+are: the script does not exist, or the operating system is unable
+to execute perl to run the script.  The returned `$run` object
+(an instance of [Test::Script::Async](https://metacpan.org/pod/Test::Script::Async)) can be used to further
+test the success or failure of the script run. 
+
+Note that this test does NOT fail on compolation error, for that
+use ["script\_compiles"](#script_compiles).
+
+# ATTRIBUTES
+
+## out
+
+    my $listref = $run->out;
+
+Returns a list reference of the captured standard output, split on new lines.
+
+## err
+
+    my $listref = $run->err;
+
+Returns a list reference of the captured standard error, split on new lines.
+
+## exit
+
+    my $int = $run->exit;
+
+Returns the exit value of the script run.
+
+## signal
+
+    my $int = $run->signal;
+
+Returns the signal that killed the script, if any.  It will be 0 if the script
+exited normally.
+
 # AUTHOR
 
 Graham Ollis &lt;plicease@cpan.org>
