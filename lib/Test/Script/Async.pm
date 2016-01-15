@@ -136,7 +136,7 @@ to execute perl to run the script.  The returned C<$run> object
 (an instance of L<Test::Script::Async>) can be used to further
 test the success or failure of the script run. 
 
-Note that this test does NOT fail on compolation error, for that
+Note that this test does NOT fail on compile error, for that
 use L</script_compiles>.
 
 =cut
@@ -297,7 +297,7 @@ sub exit_isnt
 
 Test passes if the script run was killed by the given signal.
 
-Note that this is inherently unportable!  Espeically on Windows!
+Note that this is inherently unportable!  Especially on Windows!
 
 =cut
 
@@ -421,7 +421,7 @@ sub out_unlike
  $run->out_like($regex);
  $run->out_like($regex, $test_name);
 
-Test passes if one of the stdard error output lines matches the given regex.
+Test passes if one of the standard error output lines matches the given regex.
 
 =cut
 

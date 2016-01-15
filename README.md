@@ -50,7 +50,7 @@ to execute perl to run the script.  The returned `$run` object
 (an instance of [Test::Script::Async](https://metacpan.org/pod/Test::Script::Async)) can be used to further
 test the success or failure of the script run. 
 
-Note that this test does NOT fail on compolation error, for that
+Note that this test does NOT fail on compile error, for that
 use ["script\_compiles"](#script_compiles).
 
 # ATTRIBUTES
@@ -103,7 +103,7 @@ Same as ["exit\_is"](#exit_is) except the test fails if the exit value matches.
 
 Test passes if the script run was killed by the given signal.
 
-Note that this is inherently unportable!  Espeically on Windows!
+Note that this is inherently unportable!  Especially on Windows!
 
 ## signal\_isnt
 
@@ -131,7 +131,7 @@ Test passes if none of the output lines matches the given regex.
     $run->out_like($regex);
     $run->out_like($regex, $test_name);
 
-Test passes if one of the stdard error output lines matches the given regex.
+Test passes if one of the standard error output lines matches the given regex.
 
 ## err\_unlike
 
