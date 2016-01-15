@@ -7,9 +7,22 @@ Non-blocking friendly tests for scripts
     use Test::Stream -V1;
     use Test::Script::Async;
     
-    plan 1;
+    plan 4;
     
+    # test that the scripts compiles.
     script_compiles 'script/myscript.pl';
+    
+    # test that we are able to run the script
+    script_runs('script/myscript.pl')
+      # and it exits with a success value
+      ->exit_is(0)
+      # and that the standard output has
+      # foo in it somewhere
+      ->out_like(qr{foo})
+      # print diagnostic if any of the tests
+      # for this run failed.  Useful for
+      # cpan testers reports
+      ->diag_if_fail;
 
 # DESCRIPTION
 
@@ -139,6 +152,31 @@ Test passes if one of the standard error output lines matches the given regex.
     $run->err_like($regex, $test_name);
 
 Test passes if none of the standard error output lines matches the given regex.
+
+## diag
+
+    $run->diag;
+
+Print out diagnostics (with `diag`) to describe the run of the script.
+This includes the script filename, any arguments, the termination status
+(either error, exit value or signal number), the output and the stndard
+error output.
+
+## note
+
+    $run->note;
+
+Same as ["diag"](#diag) above, but use `note` instead of `diag` to print out
+the diagnostic.
+
+## diag\_if\_fail
+
+    $run->diag_if_fail;
+
+Print out full diagnostic using ["diag"](#diag) if any of the tests for this run
+failed.  This can be handy after a long series of tests for cpan testers.
+If everything is good then no diagnostic is printed but if anything failed,
+then you will see the script, arguments, termination status and output.
 
 # AUTHOR
 

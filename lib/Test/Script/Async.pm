@@ -21,9 +21,22 @@ no Test::Stream::Exporter;
  use Test::Stream -V1;
  use Test::Script::Async;
  
- plan 1;
+ plan 4;
  
+ # test that the scripts compiles.
  script_compiles 'script/myscript.pl';
+ 
+ # test that we are able to run the script
+ script_runs('script/myscript.pl')
+   # and it exits with a success value
+   ->exit_is(0)
+   # and that the standard output has
+   # foo in it somewhere
+   ->out_like(qr{foo})
+   # print diagnostic if any of the tests
+   # for this run failed.  Useful for
+   # cpan testers reports
+   ->diag_if_fail;
 
 =head1 DESCRIPTION
 
@@ -155,13 +168,20 @@ sub script_runs
   $test_name ||= @args ? "Script $script runs with arguments @args" : "Script $script runs";
   
   my $done = AE::cv;
-  my $run = bless { out => [], err => [], ok => 0 }, __PACKAGE__;
+  my $run = bless {
+    script => _path $script,
+    args   => [@args],
+    out    => [],
+    err    => [], 
+    ok     => 0,
+  }, __PACKAGE__;
   my $ctx = context();
 
   unless(-f $script)
   {
     $ctx->ok(0, $test_name);
     $ctx->diag("script does not exist");
+    $run->{fail} = 'script not found';
     $ctx->release;
     return $run;
   }
@@ -187,6 +207,7 @@ sub script_runs
       my($error) = @_;
       
       $run->{ok} = 0;
+      $run->{fail} = $error;
       $ctx->ok(0, $test_name);
       $ctx->diag("error running script: $error");      
       $done->send;
@@ -269,6 +290,8 @@ sub exit_is
   {
     $ctx->diag("script exited with value @{[ $self->exit ]}");
   }
+  
+  $self->{ok} = 0 unless $ok;
 
   $ctx->release;
   $self;
@@ -322,6 +345,8 @@ sub signal_is
   {
     $ctx->diag("script killed with signal @{[ $self->signal ]}");
   }
+
+  $self->{ok} = 0 unless $ok;
 
   $ctx->release;
   $self;
@@ -396,6 +421,7 @@ sub out_like
   $ctx->diag($_) for @diag;
   
   $ctx->release;
+  $self->{ok} = 0 unless $ok;
   
   $self;
 }
@@ -451,5 +477,81 @@ sub err_unlike
   shift->out_like(@_);
 }
 
-1;
+=head2 diag
 
+ $run->diag;
+
+Print out diagnostics (with C<diag>) to describe the run of the script.
+This includes the script filename, any arguments, the termination status
+(either error, exit value or signal number), the output and the stndard
+error output.
+
+=cut
+
+our $diag = 'diag';
+
+sub diag
+{
+  my($self) = @_;
+
+  my $ctx = context(level => $level);
+  
+  $ctx->$diag("script:    @{[ $self->{script} ]}");
+  $ctx->$diag("arguments: @{[ join ' ', @{ $self->{args} } ]}") if @{ $self->{args} };
+  if(defined $self->{fail})
+  {
+    $ctx->$diag("error:     @{[ $self->{fail} ]}");
+  }
+  elsif($self->signal)
+  {
+    $ctx->$diag("signal:    @{[ $self->signal ]}");
+  }
+  else
+  {
+    $ctx->$diag("exit:      @{[ $self->exit ]}");
+  }
+  $ctx->$diag("[out] $_") for @{ $self->out };
+  $ctx->$diag("[err] $_") for @{ $self->err };
+  
+  $ctx->release;
+  
+  $self;
+}
+
+=head2 note
+
+ $run->note;
+
+Same as L</diag> above, but use C<note> instead of C<diag> to print out
+the diagnostic.
+
+=cut
+
+sub note
+{
+  local $diag  = 'note';
+  local $level = 1;
+  shift->diag;
+}
+
+=head2 diag_if_fail
+
+ $run->diag_if_fail;
+
+Print out full diagnostic using L</diag> if any of the tests for this run
+failed.  This can be handy after a long series of tests for cpan testers.
+If everything is good then no diagnostic is printed but if anything failed,
+then you will see the script, arguments, termination status and output.
+
+=cut
+
+sub diag_if_fail
+{
+  my($self) = @_;
+  return if $self->{ok};
+  local $level = 1;
+  $self->diag;
+  $self;
+}
+
+1;
