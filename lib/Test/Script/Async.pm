@@ -253,10 +253,10 @@ sub exit_is
   my $ctx = context();
 
   $test_message ||= $reverse ? "script exited with a value other than $value" : "script exited with value $value";
-  my $ok = defined $self->{exit} && !$self->{signal} && ($reverse ? $self->{exit} != $value : $self->{exit} == $value);
+  my $ok = defined $self->exit && !$self->{signal} && ($reverse ? $self->exit != $value : $self->exit == $value);
 
   $ctx->ok($ok, $test_message);
-  if(!defined $self->{exit})
+  if(!defined $self->exit)
   {
     $ctx->diag("script did not run so did not exit");
   }
@@ -286,6 +286,58 @@ sub exit_isnt
 {
   local $reverse = 1;
   shift->exit_is(@_);
+}
+
+=head2 signal_is
+
+ $run->signal_is($value);
+ $run->signal_is($value, $test_name);
+
+Test passes if the script run was killed by the given signal.
+
+Note that this is inherently unportable!  Espeically on Windows!
+
+=cut
+
+sub signal_is
+{
+  my($self, $value, $test_message) = @_;
+  my $ctx = context();
+
+  $test_message ||= $reverse ? "script not killed by signal $value" : "script killed by signal $value";
+  my $ok = $self->signal && ($reverse ? $self->signal != $value : $self->signal == $value);
+
+  $ctx->ok($ok, $test_message);
+  if(!defined $self->signal)
+  {
+    $ctx->diag("script did not run so was not killed");
+  }
+  elsif(!$self->signal)
+  {
+    $ctx->diag("script exited with value @{[ $self->exit ]}");
+  }
+  elsif(!$ok)
+  {
+    $ctx->diag("script killed with signal @{[ $self->signal ]}");
+  }
+
+  $ctx->release;
+  $self;
+}
+
+=head2 signal_isnt
+
+ $run->signal_isnt($value);
+ $run->signal_isnt($value, $test_name);
+
+Same as L</signal_is> except the test fails if the exit value matches.
+
+=cut
+
+sub signal_isnt
+{
+  local $reverse = 1;
+  shift->signal_is(@_);
 }
 
 1;
