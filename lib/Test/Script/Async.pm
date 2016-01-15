@@ -273,6 +273,15 @@ sub exit_is
   $self;
 }
 
+=head2 exit_isnt
+
+ $run->exit_isnt($value);
+ $run->exit_isnt($value, $test_name);
+
+Same as L</exit_is> except the test fails if the exit value matches.
+
+=cut
+
 sub exit_isnt
 {
   local $reverse = 1;

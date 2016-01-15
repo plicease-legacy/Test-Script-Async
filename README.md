@@ -80,6 +80,22 @@ Returns the exit value of the script run.
 Returns the signal that killed the script, if any.  It will be 0 if the script
 exited normally.
 
+# METHODS
+
+## exit\_is
+
+    $run->exit_is($value);
+    $run->exit_is($value, $test_name);
+
+Test passes if the script run exited with the given value.
+
+## exit\_isnt
+
+    $run->exit_isnt($value);
+    $run->exit_isnt($value, $test_name);
+
+Same as ["exit\_is"](#exit_is) except the test fails if the exit value matches.
+
 # AUTHOR
 
 Graham Ollis &lt;plicease@cpan.org>
