@@ -96,6 +96,50 @@ Test passes if the script run exited with the given value.
 
 Same as ["exit\_is"](#exit_is) except the test fails if the exit value matches.
 
+## signal\_is
+
+    $run->signal_is($value);
+    $run->signal_is($value, $test_name);
+
+Test passes if the script run was killed by the given signal.
+
+Note that this is inherently unportable!  Espeically on Windows!
+
+## signal\_isnt
+
+    $run->signal_isnt($value);
+    $run->signal_isnt($value, $test_name);
+
+Same as ["signal\_is"](#signal_is) except the test fails if the exit value matches.
+
+## out\_like
+
+    $run->out_like($regex);
+    $run->out_like($regex, $test_name);
+
+Test passes if one of the output lines matches the given regex.
+
+## out\_unlike
+
+    $run->out_like($regex);
+    $run->out_like($regex, $test_name);
+
+Test passes if none of the output lines matches the given regex.
+
+## err\_like
+
+    $run->out_like($regex);
+    $run->out_like($regex, $test_name);
+
+Test passes if one of the stdard error output lines matches the given regex.
+
+## err\_unlike
+
+    $run->err_like($regex);
+    $run->err_like($regex, $test_name);
+
+Test passes if none of the standard error output lines matches the given regex.
+
 # AUTHOR
 
 Graham Ollis &lt;plicease@cpan.org>

@@ -416,5 +416,40 @@ sub out_unlike
   shift->out_like(@_);
 }
 
+=head2 err_like
+
+ $run->out_like($regex);
+ $run->out_like($regex, $test_name);
+
+Test passes if one of the stdard error output lines matches the given regex.
+
+=cut
+
+sub err_like
+{
+  local $stream      = 'err';
+  local $stream_name = 'standard error';
+  local $level       = 1;
+  shift->out_like(@_);
+}
+
+=head2 err_unlike
+
+ $run->err_like($regex);
+ $run->err_like($regex, $test_name);
+
+Test passes if none of the standard error output lines matches the given regex.
+
+=cut
+
+sub err_unlike
+{
+  local $stream      = 'err';
+  local $stream_name = 'standard error';
+  local $reverse     = 1;
+  local $level       = 1;
+  shift->out_like(@_);
+}
+
 1;
 
