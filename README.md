@@ -159,7 +159,7 @@ Test passes if none of the standard error output lines matches the given regex.
 
 Print out diagnostics (with `diag`) to describe the run of the script.
 This includes the script filename, any arguments, the termination status
-(either error, exit value or signal number), the output and the stndard
+(either error, exit value or signal number), the output and the standard
 error output.
 
 ## note
