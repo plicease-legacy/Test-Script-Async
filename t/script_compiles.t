@@ -3,7 +3,7 @@ use warnings;
 use Test::Stream qw( -V1 -Tester );
 use Test::Script::Async;
 
-plan 3;
+plan 4;
 
 is(
   intercept { script_compiles "corpus/good.pl" },
@@ -11,6 +11,18 @@ is(
     event Ok => sub {
       call pass => T();
       call name => 'Script corpus/good.pl compiles';
+    };
+    end;
+  },
+  "compiles good without test name",
+);
+
+is(
+  intercept { script_compiles "corpus/good.pl", 'custom name' },
+  array {
+    event Ok => sub {
+      call pass => T();
+      call name => 'custom name';
     };
     end;
   },
@@ -51,3 +63,4 @@ is(
   },
   "compiles bad without test name",
 );
+
