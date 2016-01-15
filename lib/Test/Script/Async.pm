@@ -80,6 +80,8 @@ sub script_compiles
   my $done = AE::cv;
   my @stderr;
 
+  my $ctx = context();
+
   my $ipc = AnyEvent::Open3::Simple->new(
     on_stderr => sub {
       my($proc, $line) = @_;
@@ -90,12 +92,10 @@ sub script_compiles
       
       my $ok = $exit == 0 && $sig == 0 && grep / syntax OK$/, @stderr;
       
-      my $ctx = context();
       $ctx->ok($ok, $test_name);
       $ctx->diag(@stderr) unless $ok;
       $ctx->diag("exit - $exit") if $exit;
       $ctx->diag("signal - $sig") if $sig;
-      $ctx->release;
       
       $done->send($ok);
       
@@ -106,15 +106,14 @@ sub script_compiles
       my $ctx = context();
       $ctx->ok(0, $test_name);
       $ctx->diag("error compiling script: $error");
-      $ctx->release;
       
       $done->send(0);
     },
   );
   
   $ipc->run(@cmd);
-  
   $done->recv;
+  $ctx->release;
 }
 
 1;
