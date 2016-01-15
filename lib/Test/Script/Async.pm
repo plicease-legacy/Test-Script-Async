@@ -245,27 +245,38 @@ Test passes if the script run exited with the given value.
 
 =cut
 
+our $reverse = 0;
+
 sub exit_is
 {
   my($self, $value, $test_message) = @_;
   my $ctx = context();
 
-  $test_message ||= "script exited with value $value";
-  my $ok = defined $self->{exit} && $self->{exit} == $value;
+  $test_message ||= $reverse ? "script exited with a value other than $value" : "script exited with value $value";
+  my $ok = defined $self->{exit} && !$self->{signal} && ($reverse ? $self->{exit} != $value : $self->{exit} == $value);
 
   $ctx->ok($ok, $test_message);
   if(!defined $self->{exit})
   {
     $ctx->diag("script did not run so did not exit");
   }
+  elsif($self->signal)
+  {
+    $ctx->diag("script killed with signal @{[ $self->signal ]}");
+  }
   elsif(!$ok)
   {
-    my $value = $self->exit;
-    $ctx->diag("script exited with value $value");
+    $ctx->diag("script exited with value @{[ $self->exit ]}");
   }
 
   $ctx->release;
   $self;
+}
+
+sub exit_isnt
+{
+  local $reverse = 1;
+  shift->exit_is(@_);
 }
 
 1;
