@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use 5.008001;
 use Carp ();
-use AE;
 use AnyEvent::Open3::Simple 0.86;
 use File::Spec ();
 use Probe::Perl;
@@ -42,7 +41,12 @@ no Test::Stream::Exporter;
 
 This is a non-blocking friendly version of L<Test::Script>.  It is useful when you have scripts
 that you want to test against a L<AnyEvent> or L<Mojolicious> based services that are running
-in the main test process.
+in the main test process.  The L<AnyEvent> implementations that are known to work with this
+module are pure perl, L<EV> and L<Event>.  Others may be added in the future.
+
+Unless you are using L<EV>, L<AnyEvent> and L<Mojolicious> have incompatible event loops.  This
+module will scan C<%INC> and if you have any L<Mojolicious> or L<Mojo> modules loaded, it
+will use the L<Mojolicious> event loop instead of L<AnyEvent>.
 
 The interface is a little different for running scripts, in that instead of specifying a number
 of attributes that should be true as an argument, the L</script_runs> function returns an
@@ -72,6 +76,14 @@ sub _perl ()
   $perl ||= Probe::Perl->find_perl_interpreter;
 }
 
+sub _detect
+{
+  if(grep /^(Mojo|Mojolicious)(\/.*)?\.pm?$/, keys %INC)
+  { 'mojo' }
+  else
+  { return undef }
+}
+
 =head1 FUNCTIONS
 
 =head2 script_compiles
@@ -94,7 +106,12 @@ sub script_compiles
   $test_name ||= "Script $script compiles";
   
   # TODO: also work with mojo
-  my $done = AE::cv;
+  my $done;
+  unless(_detect())
+  {
+    require AE;
+    $done = AE::cv();
+  }
   my @stderr;
 
   my $ctx = context();
@@ -167,7 +184,12 @@ sub script_runs
   $test_name ||= @args ? "Script $script runs with arguments @args" : "Script $script runs";
   
   # TODO: also work with mojo
-  my $done = AE::cv;
+  my $done;
+  unless(_detect())
+  {
+    require AE;
+    $done = AE::cv();
+  }
   my $run = bless {
     script => _path $script,
     args   => [@args],
@@ -187,6 +209,7 @@ sub script_runs
   }
 
   my $ipc = AnyEvent::Open3::Simple->new(
+    implementation => _detect(),
     on_stderr => sub {
       my(undef, $line) = @_;
       push @{ $run->{err} }, $line;

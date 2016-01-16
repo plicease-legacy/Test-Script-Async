@@ -28,7 +28,12 @@ Non-blocking friendly tests for scripts
 
 This is a non-blocking friendly version of [Test::Script](https://metacpan.org/pod/Test::Script).  It is useful when you have scripts
 that you want to test against a [AnyEvent](https://metacpan.org/pod/AnyEvent) or [Mojolicious](https://metacpan.org/pod/Mojolicious) based services that are running
-in the main test process.
+in the main test process.  The [AnyEvent](https://metacpan.org/pod/AnyEvent) implementations that are known to work with this
+module are pure perl, [EV](https://metacpan.org/pod/EV) and [Event](https://metacpan.org/pod/Event).  Others may be added in the future.
+
+Unless you are using [EV](https://metacpan.org/pod/EV), [AnyEvent](https://metacpan.org/pod/AnyEvent) and [Mojolicious](https://metacpan.org/pod/Mojolicious) have incompatible event loops.  This
+module will scan `%INC` and if you have any [Mojolicious](https://metacpan.org/pod/Mojolicious) or [Mojo](https://metacpan.org/pod/Mojo) modules loaded, it
+will use the [Mojolicious](https://metacpan.org/pod/Mojolicious) event loop instead of [AnyEvent](https://metacpan.org/pod/AnyEvent).
 
 The interface is a little different for running scripts, in that instead of specifying a number
 of attributes that should be true as an argument, the ["script\_runs"](#script_runs) function returns an

@@ -13,7 +13,7 @@ use Test::Script::Async;
 use IO::Socket::INET;
 use Capture::Tiny qw( capture );
 
-plan 1;
+plan 2;
 
 get '/foo' => sub {
   my($c) = @_;
@@ -31,6 +31,8 @@ capture { $daemon->start };
 
 #ok !$INC{'AnyEvent.pm'}, 'did not load AnyEvent';
 #diag "AnyEvent.pm = $INC{'AnyEvent.pm'}" if $INC{'AnyEvent.pm'};
+
+is(scalar Test::Script::Async::_detect(), 'mojo', '_detect = mojo');
 
 package
   My::Log;

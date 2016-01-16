@@ -7,7 +7,7 @@ use AnyEvent::Socket;
 use AnyEvent::Handle;
 use Test::Script::Async;
 
-plan 4;
+plan 5;
 
 my @w;
 push @w, AE::timer 15, 0, sub { diag "timeout!"; exit 2 };
@@ -33,3 +33,5 @@ script_runs(['corpus/aeclient.pl', $port])
   ->exit_is(22)
   ->out_like(qr{platypus man})
   ->diag_if_fail;
+
+is(scalar Test::Script::Async::_detect(), undef, '_detect = undef');
