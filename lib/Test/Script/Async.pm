@@ -87,10 +87,7 @@ C<$script> should be the path to the script in unix-format non-absolute form.
 sub script_compiles
 {
   my($script, $test_name) = @_;
-  #my @args;
-  #($script, @args) = @$script if ref $script eq 'ARRAY';
   my @libs = map { "-I$_" } grep { !ref($_) } @INC;
-  #my @cmd = ( _perl, @libs, '-c', _path $script, @args );
   my @cmd = ( _perl, @libs, '-c', _path $script );
   
   $test_name ||= "Script $script compiles";
