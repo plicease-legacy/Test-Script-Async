@@ -13,16 +13,12 @@ BEGIN { eval q{ use EV; } }
 $modules{$_} = $_ for qw(
   AE
   AnyEvent::Open3::Simple
-  Carp
   EV
   Event
   ExtUtils::MakeMaker
-  File::Spec
   Probe::Perl
   Test::More
   Test::Stream
-  Test::Stream::Context
-  Test::Stream::Exporter
 );
 
 

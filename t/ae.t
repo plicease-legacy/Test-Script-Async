@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use Test::Stream '-V1';
 use Test::Stream::Plugin::Compare qw( match );
-use AnyEvent;
+use AE;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 use Test::Script::Async;
@@ -10,10 +10,10 @@ use Test::Script::Async;
 plan 4;
 
 my @w;
-push @w, AnyEvent->timer(after => 15, cb=> sub { diag "timeout!"; exit 2 });
+push @w, AE::timer 15, 0, sub { diag "timeout!"; exit 2 };
 
 my $port = do {
-  my $cv = AnyEvent->condvar;
+  my $cv = AE::cv;
   push @w, tcp_server '127.0.0.1', undef, sub {
     my($fh, $host, $port) = @_;
 

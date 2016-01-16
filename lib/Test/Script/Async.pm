@@ -5,7 +5,7 @@ use warnings;
 use 5.010;
 use Carp ();
 use AE;
-use AnyEvent::Open3::Simple;
+use AnyEvent::Open3::Simple 0.86;
 use File::Spec ();
 use Probe::Perl;
 use Test::Stream::Context qw( context );

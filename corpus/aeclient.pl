@@ -1,15 +1,15 @@
 use strict;
 use warnings;
-use AnyEvent;
+use AE;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 
 my($port) = @ARGV;
 
 my @w;
-push @w, AnyEvent->timer(after => 10, cb=> sub { warn "timeout!"; exit 2 });
+push @w, AE::timer 10, 0, sub { warn "timeout!"; exit 2 };
 
-my $cv = AnyEvent->condvar;
+my $cv = AE::cv;
 
 tcp_connect '127.0.0.1', $port, sub {
   my($fh) = @_;
