@@ -13,7 +13,7 @@ use Test::Script::Async;
 use IO::Socket::INET;
 use Capture::Tiny qw( capture );
 
-plan 2;
+plan 3;
 
 get '/foo' => sub {
   my($c) = @_;
@@ -29,8 +29,8 @@ $url->port(IO::Socket::INET->new(Listen => 5, LocalAddr => "127.0.0.1")->sockpor
 my $daemon = Mojo::Server::Daemon->new(app => app(), listen => [$url]);
 capture { $daemon->start };
 
-#ok !$INC{'AnyEvent.pm'}, 'did not load AnyEvent';
-#diag "AnyEvent.pm = $INC{'AnyEvent.pm'}" if $INC{'AnyEvent.pm'};
+ok !$INC{'AnyEvent.pm'}, 'did not load AnyEvent';
+diag "AnyEvent.pm = $INC{'AnyEvent.pm'}" if $INC{'AnyEvent.pm'};
 
 is(scalar Test::Script::Async::_detect(), 'mojo', '_detect = mojo');
 
