@@ -41,8 +41,8 @@ no Test::Stream::Exporter;
 =head1 DESCRIPTION
 
 This is a non-blocking friendly version of L<Test::Script>.  It is useful when you have scripts
-that you want to test against a L<AnyEvent> based services that are running in the main test
-process.
+that you want to test against a L<AnyEvent> or L<Mojolicious> based services that are running
+in the main test process.
 
 The interface is a little different for running scripts, in that instead of specifying a number
 of attributes that should be true as an argument, the L</script_runs> function returns an

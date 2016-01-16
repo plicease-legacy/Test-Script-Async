@@ -27,8 +27,8 @@ Non-blocking friendly tests for scripts
 # DESCRIPTION
 
 This is a non-blocking friendly version of [Test::Script](https://metacpan.org/pod/Test::Script).  It is useful when you have scripts
-that you want to test against a [AnyEvent](https://metacpan.org/pod/AnyEvent) based services that are running in the main test
-process.
+that you want to test against a [AnyEvent](https://metacpan.org/pod/AnyEvent) or [Mojolicious](https://metacpan.org/pod/Mojolicious) based services that are running
+in the main test process.
 
 The interface is a little different for running scripts, in that instead of specifying a number
 of attributes that should be true as an argument, the ["script\_runs"](#script_runs) function returns an
