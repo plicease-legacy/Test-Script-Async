@@ -92,6 +92,7 @@ sub script_compiles
   
   $test_name ||= "Script $script compiles";
   
+  # TODO: also work with mojo
   my $done = AE::cv;
   my @stderr;
 
@@ -164,6 +165,7 @@ sub script_runs
   
   $test_name ||= @args ? "Script $script runs with arguments @args" : "Script $script runs";
   
+  # TODO: also work with mojo
   my $done = AE::cv;
   my $run = bless {
     script => _path $script,
