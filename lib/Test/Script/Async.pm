@@ -2,7 +2,7 @@ package Test::Script::Async;
 
 use strict;
 use warnings;
-use 5.010;
+use 5.008001;
 use Carp ();
 use AE;
 use AnyEvent::Open3::Simple 0.86;
@@ -65,10 +65,11 @@ sub _path ($)
   );
 }
 
+my $perl;
+
 sub _perl ()
 {
-  state $perl;
-  $perl //= Probe::Perl->find_perl_interpreter;
+  $perl ||= Probe::Perl->find_perl_interpreter;
 }
 
 =head1 FUNCTIONS
