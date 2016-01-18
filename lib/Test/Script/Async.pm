@@ -42,15 +42,15 @@ no Test::Stream::Exporter;
 This is a non-blocking friendly version of L<Test::Script>.  It is useful when you have scripts
 that you want to test against a L<AnyEvent> or L<Mojolicious> based services that are running
 in the main test process.  The L<AnyEvent> implementations that are known to work with this
-module are pure perl, L<EV> and L<Event>.  Others may be added in the future.
+module are pure perl, L<EV> and L<Event>.  Others may work, or may be added in the future.
 
-Unless you are using L<EV>, L<AnyEvent> and L<Mojolicious> have incompatible event loops.  This
-module will scan C<%INC> and if you have any L<Mojolicious> or L<Mojo> modules loaded, it
-will use the L<Mojolicious> event loop instead of L<AnyEvent>.
+This module will use L<Mojo::IOLoop> if any L<Mojo> modules are loaded.  The L<Mojo> event loop
+only works with L<EV> if you want to use L<AnyEvent>, so make sure that you include a C<use EV>
+line if you intend on using both L<AnyEvent> and L<Mojolicious>.
 
-The interface is a little different for running scripts, in that instead of specifying a number
-of attributes that should be true as an argument, the L</script_runs> function returns an
-instance of L<Test::Script::Async> that can then be interrogated for things like exit value
+The interface is different from L<Test::Script> for running scripts, in that it is object oriented.
+The L</script_runs> function only tests that the script was able to run normally, and returns
+an instance of L<Test::Script::Async> which can be interrogated for things like the exit value
 and output.
 
 It uses the brand spanking new L<Test::Stream>, which means that it is not (as of this writing)
