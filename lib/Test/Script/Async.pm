@@ -84,6 +84,12 @@ sub _detect
   { return undef }
 }
 
+sub _is_mojo
+{
+  my $detect = _detect();
+  defined $detect && $detect eq 'mojo';
+}
+
 =head1 FUNCTIONS
 
 =head2 script_compiles
@@ -223,7 +229,8 @@ sub script_runs
 
       $run->{ok} = 1;
       $ctx->ok(1, $test_name);
-      $done->send;
+      
+      _is_mojo() ? $done = 1 : $done->send;
       
     },
     on_error  => sub {
@@ -233,12 +240,19 @@ sub script_runs
       $run->{fail} = $error;
       $ctx->ok(0, $test_name);
       $ctx->diag("error running script: $error");      
-      $done->send;
+      _is_mojo() ? $done = 1 : $done->send;
     },
   );
   
   $ipc->run(@cmd);
-  $done->recv;
+  if(_is_mojo())
+  {
+    Mojo::IOLoop->one_tick until $done;
+  }
+  else
+  {
+    $done->recv;
+  }
   $ctx->release;
   
   $run;

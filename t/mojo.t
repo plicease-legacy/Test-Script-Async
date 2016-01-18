@@ -13,7 +13,7 @@ use Test::Script::Async;
 use IO::Socket::INET;
 use Capture::Tiny qw( capture );
 
-plan 3;
+plan 6;
 
 get '/foo' => sub {
   my($c) = @_;
@@ -33,6 +33,11 @@ ok !$INC{'AnyEvent.pm'}, 'did not load AnyEvent';
 diag "AnyEvent.pm = $INC{'AnyEvent.pm'}" if $INC{'AnyEvent.pm'};
 
 is(scalar Test::Script::Async::_detect(), 'mojo', '_detect = mojo');
+
+script_runs(['corpus/mojoclient.pl',$url->port])
+  ->exit_is(22)
+  ->out_like(qr{Platypus Man})
+  ->note;
 
 package
   My::Log;
