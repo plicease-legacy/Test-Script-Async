@@ -1,15 +1,14 @@
 language: perl
 sudo: false
 
-# remember need at least one install command, even if there are no
-# prereqs, else travis will try to install deps using cpanm
-# which is not what we want since this is a Dist::Zilla dist.
 install:
   - perlbrew list
   - dzil authordeps --missing | cpanm -n
   - dzil listdeps --missing | cpanm -n
+  - cpanm Mojolicious || true
 
 perl:
+  - "5.8"
   - "5.10"
   - "5.12"
   - "5.14"
