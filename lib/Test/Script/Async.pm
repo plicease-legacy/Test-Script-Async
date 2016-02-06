@@ -7,17 +7,17 @@ use Carp ();
 use AnyEvent::Open3::Simple 0.86;
 use File::Spec ();
 use Probe::Perl;
-use Test::Stream::Context qw( context );
-use Test::Stream::Exporter;
-default_exports qw( script_compiles script_runs );
-no Test::Stream::Exporter;
+use Test2::API qw( context );
+use base qw( Exporter );
 
 # ABSTRACT: Non-blocking friendly tests for scripts
 # VERSION
 
+our @EXPORT    = qw( script_compiles script_runs );
+
 =head1 SYNOPSIS
 
- use Test::Stream -V1;
+ use Test2::Bundle::Extended;
  use Test::Script::Async;
  
  plan 4;
@@ -53,8 +53,9 @@ The L</script_runs> function only tests that the script was able to run normally
 an instance of L<Test::Script::Async> which can be interrogated for things like the exit value
 and output.
 
-It uses the brand spanking new L<Test::Stream>, which means that it is not (as of this writing)
-compatible with L<Test::More> and friends, though hopefully that will be rectified one day.
+It uses the brand spanking new L<Test2> framework, which is experimental as of this writing.
+In particular it is not currently compatible with L<Test::More> and L<Test::Builder>, but hopefully
+will be one day.
 
 =cut
 
@@ -132,7 +133,7 @@ sub script_compiles
       
       my $ok = $exit == 0 && $sig == 0 && grep / syntax OK$/, @stderr;
       
-      $ctx->ok($ok, $test_name);
+      $ctx->send_event('Ok', pass => $ok, name => $test_name);
       $ctx->diag(@stderr) unless $ok;
       $ctx->diag("exit - $exit") if $exit;
       $ctx->diag("signal - $sig") if $sig;
@@ -143,7 +144,7 @@ sub script_compiles
     on_error  => sub {
       my($error) = @_;
       
-      $ctx->ok(0, $test_name);
+      $ctx->send_event('Ok', pass => 0, name => $test_name);
       $ctx->diag("error compiling script: $error");
       
       $done->send(0);
@@ -207,7 +208,7 @@ sub script_runs
 
   unless(-f $script)
   {
-    $ctx->ok(0, $test_name);
+    $ctx->send_event('Ok', pass => 0, name => $test_name);
     $ctx->diag("script does not exist");
     $run->{fail} = 'script not found';
     $ctx->release;
@@ -228,7 +229,7 @@ sub script_runs
       (undef, $run->{exit}, $run->{signal}) = @_;
 
       $run->{ok} = 1;
-      $ctx->ok(1, $test_name);
+      $ctx->send_event('Ok', pass => 1, name => $test_name);
       
       _is_mojo() ? $done = 1 : $done->send;
       
@@ -238,7 +239,7 @@ sub script_runs
       
       $run->{ok} = 0;
       $run->{fail} = $error;
-      $ctx->ok(0, $test_name);
+      $ctx->send_event('Ok', pass => 0, name => $test_name);
       $ctx->diag("error running script: $error");      
       _is_mojo() ? $done = 1 : $done->send;
     },
@@ -308,13 +309,13 @@ our $level   = 0;
 
 sub exit_is
 {
-  my($self, $value, $test_message) = @_;
+  my($self, $value, $test_name) = @_;
   my $ctx = context( level => $level );
 
-  $test_message ||= $reverse ? "script exited with a value other than $value" : "script exited with value $value";
+  $test_name ||= $reverse ? "script exited with a value other than $value" : "script exited with value $value";
   my $ok = defined $self->exit && !$self->{signal} && ($reverse ? $self->exit != $value : $self->exit == $value);
 
-  $ctx->ok($ok, $test_message);
+  $ctx->send_event('Ok', pass => $ok, name => $test_name);
   if(!defined $self->exit)
   {
     $ctx->diag("script did not run so did not exit");
@@ -363,13 +364,13 @@ Note that this is inherently unportable!  Especially on Windows!
 
 sub signal_is
 {
-  my($self, $value, $test_message) = @_;
+  my($self, $value, $test_name) = @_;
   my $ctx = context(level => $level);
 
-  $test_message ||= $reverse ? "script not killed by signal $value" : "script killed by signal $value";
+  $test_name ||= $reverse ? "script not killed by signal $value" : "script killed by signal $value";
   my $ok = $self->signal && ($reverse ? $self->signal != $value : $self->signal == $value);
 
-  $ctx->ok($ok, $test_message);
+  $ctx->send_event('Ok', pass => $ok, name => $test_name);
   if(!defined $self->signal)
   {
     $ctx->diag("script did not run so was not killed");
@@ -454,7 +455,7 @@ sub out_like
     }
   }
   
-  $ctx->ok($ok, $test_name);
+  $ctx->send_event('Ok', pass => $ok, name => $test_name);
   $ctx->diag($_) for @diag;
   
   $ctx->release;

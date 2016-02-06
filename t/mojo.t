@@ -1,9 +1,12 @@
 use strict;
 use warnings;
 BEGIN { $ENV{MOJO_REACTOR} = 'Mojo::Reactor::Poll'; $ENV{DEVEL_HIDE_VERBOSE} = 0 }
-use Test::Stream SkipWithout => ['Devel::Hide', 'Capture::Tiny'];
+use Test2::Require::Module 'Devel::Hide';
+use Test2::Require::Module 'Capture::Tiny';
 use Devel::Hide 'EV';
-use Test::Stream '-V1', SkipWithout => [{ Mojolicious => 6.02  }], Classic => [qw( isnt )];
+use Test2::Bundle::Extended;
+use Test2::Require::Module 'Mojolicious' => 6.02;
+use Test2::Require::Module 'Mojolicious' => 6.02;
 use Mojo::IOLoop;
 use Mojo::Reactor;
 use Mojo::URL;
@@ -42,7 +45,7 @@ script_runs(['corpus/mojoclient.pl',$url->port])
 package
   My::Log;
 
-use Test::Stream '-V1';
+use Test2::Bundle::Extended;
 use base qw( Mojo::Log );
 
 sub append

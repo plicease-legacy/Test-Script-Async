@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::Script::Async;
-use Test::Stream -V1;
+use Test2::Bundle::Extended;
 
 plan 4;
 

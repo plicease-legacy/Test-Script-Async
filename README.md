@@ -4,7 +4,7 @@ Non-blocking friendly tests for scripts
 
 # SYNOPSIS
 
-    use Test::Stream -V1;
+    use Test2::Bundle::Extended;
     use Test::Script::Async;
     
     plan 4;
@@ -40,8 +40,9 @@ The ["script\_runs"](#script_runs) function only tests that the script was able 
 an instance of [Test::Script::Async](https://metacpan.org/pod/Test::Script::Async) which can be interrogated for things like the exit value
 and output.
 
-It uses the brand spanking new [Test::Stream](https://metacpan.org/pod/Test::Stream), which means that it is not (as of this writing)
-compatible with [Test::More](https://metacpan.org/pod/Test::More) and friends, though hopefully that will be rectified one day.
+It uses the brand spanking new [Test2](https://metacpan.org/pod/Test2) framework, which is experimental as of this writing.
+In particular it is not currently compatible with [Test::More](https://metacpan.org/pod/Test::More) and [Test::Builder](https://metacpan.org/pod/Test::Builder), but hopefully
+will be one day.
 
 # FUNCTIONS
 

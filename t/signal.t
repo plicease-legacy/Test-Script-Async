@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Stream qw( -V1 -Tester );
+use Test2::Bundle::Extended;
 use Test::Script::Async;
 
 skip_all 'does not make sense on windows' if $^O eq 'MSWin32';
