@@ -17,9 +17,8 @@ $modules{$_} = $_ for qw(
   Event
   ExtUtils::MakeMaker
   Probe::Perl
-  Test2::API
-  Test2::Bundle::Extended
-  Test2::Require::Module
+  Test2
+  Test2::Suite
   Test::More
 );
 
